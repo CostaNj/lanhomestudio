@@ -26,7 +26,7 @@ export default function SiteShell({ bodyClass, featured, children }: Props) {
               width={featured.width}
               height={featured.height}
               className="attachment-twentyseventeen-featured-image size-twentyseventeen-featured-image wp-post-image"
-              alt=""
+              alt={featured.alt ?? ""}
               sizes="100vw"
             />
           </div>

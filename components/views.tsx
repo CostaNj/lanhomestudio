@@ -1,6 +1,8 @@
 import type { ReactNode } from "react";
 import { comments, formatDate, dateParts, search, type Entry, type Post } from "@/lib/content";
+import { blogPostingJsonLd, breadcrumbJsonLd } from "@/lib/seo";
 import EntryContent from "./EntryContent";
+import JsonLd from "./JsonLd";
 import { PostListItem, PostedOn, SearchResultItem } from "./PostSummary";
 import SearchForm from "./SearchForm";
 import Sidebar from "./Sidebar";
@@ -10,6 +12,7 @@ import SiteShell from "./SiteShell";
 export function PageView({ entry }: { entry: Entry }) {
   return (
     <SiteShell bodyClass={`page-template-default page page-id-${entry.id} page-two-column`} featured={entry.featured}>
+      <JsonLd data={breadcrumbJsonLd([{ name: entry.title, path: entry.url }])} />
       <div className="wrap">
         <div id="primary" className="content-area">
           <main id="main" className="site-main">
@@ -97,6 +100,13 @@ export function SingleView({ post }: { post: Post }) {
   const postComments = comments.filter((c) => c.postId === post.id);
   return (
     <SiteShell bodyClass={`post-template-default single single-post postid-${post.id} single-format-standard has-sidebar`}>
+      <JsonLd data={blogPostingJsonLd(post)} />
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Блог", path: "/blog" },
+          { name: post.title, path: post.url },
+        ])}
+      />
       <div className="wrap">
         <div id="primary" className="content-area">
           <main id="main" className="site-main">

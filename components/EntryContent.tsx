@@ -5,7 +5,7 @@ export function Gallery({ images }: { images: NonNullable<Entry["gallery"]> }) {
     <figure className="wp-container-2 wp-block-gallery-1 wp-block-gallery has-nested-images columns-default is-cropped">
       {images.map((img) => (
         <figure key={img.src} className="wp-block-image size-large">
-          <img src={img.src} width={img.width} height={img.height} sizes={img.sizes} alt="" loading="lazy" />
+          <img src={img.src} width={img.width} height={img.height} sizes={img.sizes} alt={img.alt ?? ""} loading="lazy" />
         </figure>
       ))}
     </figure>

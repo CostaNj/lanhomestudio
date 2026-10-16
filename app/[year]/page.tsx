@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ArchiveView } from "@/components/views";
 import { postsByDate } from "@/lib/content";
+import { pageMetadata } from "@/lib/seo";
 
 type Props = { params: Promise<{ year: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { year } = await params;
-  return { title: year };
+  return pageMetadata({ title: year, path: `/${year}`, noindex: true });
 }
 
 export default async function YearArchive({ params }: Props) {

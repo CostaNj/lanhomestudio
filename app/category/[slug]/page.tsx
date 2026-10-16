@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ArchiveView } from "@/components/views";
 import { posts, safeDecode } from "@/lib/content";
+import { pageMetadata } from "@/lib/seo";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -12,7 +13,7 @@ function postsInCategory(slug: string) {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const slug = safeDecode((await params).slug);
   const name = postsInCategory(slug)[0]?.category.name;
-  return name ? { title: name } : {};
+  return name ? pageMetadata({ title: name, path: `/category/${encodeURIComponent(slug)}`, noindex: true }) : {};
 }
 
 export default async function CategoryArchive({ params }: Props) {

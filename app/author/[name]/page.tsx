@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ArchiveView } from "@/components/views";
 import { posts, safeDecode } from "@/lib/content";
+import { pageMetadata } from "@/lib/seo";
 
 type Props = { params: Promise<{ name: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { name } = await params;
-  return { title: safeDecode(name) };
+  return pageMetadata({ title: safeDecode(name), path: `/author/${name}`, noindex: true });
 }
 
 export default async function AuthorArchive({ params }: Props) {

@@ -2,12 +2,13 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ArchiveView } from "@/components/views";
 import { postsByDate } from "@/lib/content";
+import { pageMetadata } from "@/lib/seo";
 
 type Props = { params: Promise<{ year: string; month: string; day: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { year, month, day } = await params;
-  return { title: `${day}.${month}.${year}` };
+  return pageMetadata({ title: `${day}.${month}.${year}`, path: `/${year}/${month}/${day}`, noindex: true });
 }
 
 export default async function DayArchive({ params }: Props) {

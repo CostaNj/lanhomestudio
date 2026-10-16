@@ -1,15 +1,19 @@
 import type { Metadata } from "next";
 import EntryContent from "@/components/EntryContent";
+import JsonLd from "@/components/JsonLd";
 import SiteShell from "@/components/SiteShell";
 import { SearchView } from "@/components/views";
 import { frontPage, frontPanels } from "@/lib/content";
+import { organizationJsonLd, pageMetadata } from "@/lib/seo";
 
 type Props = { searchParams: Promise<{ s?: string | string[] }> };
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
   const { s } = await searchParams;
-  if (typeof s === "string") return { title: `Результаты поиска «${s}»` };
-  return {};
+  if (typeof s === "string") {
+    return pageMetadata({ title: `Результаты поиска «${s}»`, path: "/", noindex: true, absoluteTitle: true });
+  }
+  return pageMetadata({ path: "/" });
 }
 
 export default async function Home({ searchParams }: Props) {
@@ -19,6 +23,7 @@ export default async function Home({ searchParams }: Props) {
 
   return (
     <SiteShell bodyClass={`home page-template-default page page-id-${frontPage.id} twentyseventeen-front-page page-two-column`}>
+      <JsonLd data={organizationJsonLd()} />
       <div id="primary" className="content-area">
         <main id="main" className="site-main">
           <article id={`post-${frontPage.id}`} className={`twentyseventeen-panel post-${frontPage.id} page type-page status-publish hentry`}>
