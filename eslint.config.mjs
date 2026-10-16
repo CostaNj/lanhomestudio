@@ -12,6 +12,12 @@ const compat = new FlatCompat({
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
+    rules: {
+      // Plain <img> keeps the original WordPress markup that the Twenty Seventeen CSS targets.
+      "@next/next/no-img-element": "off",
+    },
+  },
+  {
     ignores: [
       "node_modules/**",
       ".next/**",

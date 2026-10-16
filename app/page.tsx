@@ -1,95 +1,63 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import type { Metadata } from "next";
+import EntryContent from "@/components/EntryContent";
+import SiteShell from "@/components/SiteShell";
+import { SearchView } from "@/components/views";
+import { frontPage, frontPanels } from "@/lib/content";
 
-export default function Home() {
+type Props = { searchParams: Promise<{ s?: string | string[] }> };
+
+export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
+  const { s } = await searchParams;
+  if (typeof s === "string") return { title: `Результаты поиска «${s}»` };
+  return {};
+}
+
+export default async function Home({ searchParams }: Props) {
+  const { s } = await searchParams;
+  // WordPress serves search results from the front page URL: /?s=query
+  if (typeof s === "string") return <SearchView query={s} />;
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <SiteShell bodyClass={`home page-template-default page page-id-${frontPage.id} twentyseventeen-front-page page-two-column`}>
+      <div id="primary" className="content-area">
+        <main id="main" className="site-main">
+          <article id={`post-${frontPage.id}`} className={`twentyseventeen-panel post-${frontPage.id} page type-page status-publish hentry`}>
+            <div className="panel-content">
+              <div className="wrap">
+                <header className="entry-header">
+                  <h2 className="entry-title">{frontPage.title}</h2>
+                </header>
+                <EntryContent entry={frontPage} alignLeft />
+              </div>
+            </div>
+          </article>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+          {frontPanels.map((panel, i) => (
+            <article
+              key={panel.id}
+              id={`panel${i + 1}`}
+              className={`twentyseventeen-panel post-${panel.id} page type-page status-publish has-post-thumbnail hentry`}
+            >
+              {panel.featured && (
+                <div className="panel-image" style={{ backgroundImage: `url(${panel.featured.src})` }}>
+                  <div
+                    className="panel-image-prop"
+                    style={{ paddingTop: `${(panel.featured.height / panel.featured.width) * 100}%` }}
+                  />
+                </div>
+              )}
+              <div className="panel-content">
+                <div className="wrap">
+                  <header className="entry-header">
+                    <h2 className="entry-title">{panel.title}</h2>
+                  </header>
+                  <EntryContent entry={panel} />
+                </div>
+              </div>
+            </article>
+          ))}
+        </main>
+      </div>
+    </SiteShell>
   );
 }
